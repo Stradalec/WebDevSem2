@@ -12,10 +12,3 @@ coverage/
 
 .DS_Store
 Thumbs.db
-
-uploads/
-processed/
-originals/
-
-tmp/
-temp/
