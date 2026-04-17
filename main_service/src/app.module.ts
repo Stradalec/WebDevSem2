@@ -1,8 +1,9 @@
-import { Inject, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UsersModule } from './user/userModule';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), 
@@ -11,7 +12,8 @@ import { MongooseModule } from '@nestjs/mongoose';
       inject: [ConfigService], 
       useFactory: (configService: ConfigService) => ({ 
         uri: configService.get<string>('MONGO_URL') }) 
-      })],
+      }),
+    UsersModule],
     
   controllers: [AppController],
   providers: [AppService],
