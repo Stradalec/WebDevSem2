@@ -11,7 +11,8 @@ import { MongooseModule } from '@nestjs/mongoose';
       inject: [ConfigService], 
       useFactory: (configService: ConfigService) => ({ 
         uri: configService.get<string>('MONGO_URL') }) 
-      })], 
+      })],
+    
   controllers: [AppController],
   providers: [AppService],
 
