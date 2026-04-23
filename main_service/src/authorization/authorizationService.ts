@@ -20,8 +20,8 @@ export class AuthorizationService {
     if (existingUser) {
       throw new BadRequestException('Email already in use');
     }
-
-    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(dto.password, salt);
 
     const user = await this.userModel.create({
       name: dto.name,
