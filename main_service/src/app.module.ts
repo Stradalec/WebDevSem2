@@ -5,7 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './user/userModule';
 import { AuthorizationModule } from './authorization/authorizationModule';
-
+import { CourseModule } from './course/courseModule';
+import { LessonModule } from './lesson/lessonModule';
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), 
     MongooseModule.forRootAsync({ 
@@ -15,7 +16,9 @@ import { AuthorizationModule } from './authorization/authorizationModule';
         uri: configService.get<string>('MONGO_URL') }),
       }),
     UsersModule,
-    AuthorizationModule],
+    AuthorizationModule,
+    CourseModule,
+    LessonModule],
     
   controllers: [AppController],
   providers: [AppService],
