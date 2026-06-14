@@ -7,7 +7,7 @@ export class CreateLessonDto {
 
   @IsString()
   @MinLength(5)
-  textСontent!: string;
+  textContent!: string;
 
   @IsInt()
   @Min(1)
