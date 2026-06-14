@@ -19,17 +19,11 @@ export class CourseService {
   ) {}
 
   async findAll() {
-    return this.courseModel
-      .find()
-      .populate('teacher', 'name email role')
-      .sort({ createdAt: -1 });
+    return this.courseModel.find().populate('teacher', 'name email role').sort({ createdAt: -1 });
   }
 
   async findOne(id: string) {
-    const course = await this.courseModel
-      .findById(id)
-      .populate('teacher', 'name email role')
-      .populate('lessons');
+    const course = await this.courseModel.findById(id).populate('teacher', 'name email role').populate('lessons');
 
     if (!course) {
       throw new NotFoundException('Course not found');
