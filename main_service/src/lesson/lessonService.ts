@@ -7,6 +7,7 @@ import { UserRole } from '../user/schemas/user.schema';
 import { CreateLessonDto } from './dto/createLesson.dto';
 import { UpdateLessonDto } from './dto/updateLesson.dto';
 import { AuthUser } from '../course/authUser';
+import { RedisService } from '../redis/redisService';
 
 @Injectable()
 export class LessonService {
@@ -16,6 +17,7 @@ export class LessonService {
 
     @InjectModel(Course.name)
     private readonly courseModel: Model<CourseDocument>,
+    private readonly redisService: RedisService
   ) {}
 
   async findByCourse(courseId: string) {
@@ -49,7 +51,7 @@ export class LessonService {
 
     course.lessons.push(lesson._id as Types.ObjectId);
     await course.save();
-
+    await this.invalidateCourseCache(course._id.toString());
     return lesson;
   }
 
@@ -79,8 +81,9 @@ export class LessonService {
     if (dto.order !== undefined) {
       lesson.order = dto.order;
     }
-
-    return lesson.save();
+    const savedLesson = await lesson.save();
+    await this.invalidateCourseCache(course._id.toString());
+    return savedLesson;
   }
 
   async remove(courseId: string, lessonId: string, user: AuthUser) {
@@ -105,7 +108,7 @@ export class LessonService {
     );
 
     await course.save();
-
+    await this.invalidateCourseCache(course._id.toString());
     return { deleted: true, lessonId};
   }
 
@@ -117,5 +120,8 @@ export class LessonService {
     if (course.teacher.toString() !== user.userId) {
       throw new ForbiddenException('Only course owner can modify lessons');
     }
+  }
+  private async invalidateCourseCache(courseId: string) {
+    await this.redisService.del('courses:list', `course:${courseId}`);
   }
 }

@@ -6,6 +6,7 @@ import { User, UserDocument, UserRole } from '../user/schemas/user.schema';
 import { CreateCourseDto } from './dto/createCourse.dto';
 import { UpdateCourseDto } from './dto/updateCourse.dto';
 import { AuthUser } from './authUser';
+import { RedisService } from '../redis/redisService';
 
 
 @Injectable()
@@ -13,22 +14,35 @@ export class CourseService {
   constructor(
     @InjectModel(Course.name)
     private readonly courseModel: Model<CourseDocument>,
-
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
+
+    private readonly redisService: RedisService
   ) {}
 
   async findAll() {
-    return this.courseModel.find().populate('teacher', 'name email role').sort({ createdAt: -1 });
+    const cacheKey = 'courses:list';
+    const cachedCourses = await this.redisService.get(cacheKey);
+    if (cachedCourses){
+        return cachedCourses;
+    }
+    const courses = await this.courseModel.find().populate("teacher", "name email role").sort({createdAt: -1}).lean();
+    await this.redisService.set(cacheKey, courses, 60);
+    return courses;
   }
 
   async findOne(id: string) {
-    const course = await this.courseModel.findById(id).populate('teacher', 'name email role').populate('lessons');
+    const cacheKey = `course:${id}`;
 
-    if (!course) {
-      throw new NotFoundException('Course not found');
+    const cachedCourse = await this.redisService.get(cacheKey);
+    if (cachedCourse){
+        return cachedCourse;
     }
-
+    const course = await this.courseModel.findById(id).populate("teacher", "name email role").populate("lessons").lean();
+    if  (!course){
+        throw new NotFoundException("Course not found");
+    }
+    await this.redisService.set(cacheKey, course, 60);
     return course;
   }
 
@@ -37,7 +51,7 @@ export class CourseService {
       throw new ForbiddenException('Only teachers can create courses');
     }
 
-    return this.courseModel.create({
+    const course = await this.courseModel.create({
       name: dto.name,
       description: dto.description,
       teacher: new Types.ObjectId(user.userId),
@@ -45,6 +59,9 @@ export class CourseService {
       students: [],
       studentsCount: 0,
     });
+    
+    await this.invalidateCourseCache();
+    return course;
   }
 
   async update(id: string, dto: UpdateCourseDto, user: AuthUser) {
@@ -63,8 +80,10 @@ export class CourseService {
     if (dto.description !== undefined) {
       course.description = dto.description;
     }
+    const savedCourse = await course.save();
+    await this.invalidateCourseCache(id);
 
-    return course.save();
+    return savedCourse;
   }
 
   async remove(id: string, user: AuthUser) {
@@ -77,6 +96,8 @@ export class CourseService {
     this.ensureTeacherOwner(course, user);
 
     await course.deleteOne();
+
+    await this.invalidateCourseCache(id);
 
     return {
       deleted: true,
@@ -119,6 +140,8 @@ export class CourseService {
     await course.save();
     await student.save();
 
+    await this.invalidateCourseCache(id);
+    
     return {
       enrolled: true,
       courseId: course._id,
@@ -134,5 +157,14 @@ export class CourseService {
     if (course.teacher.toString() !== user.userId) {
       throw new ForbiddenException('Only course owner can modify this course');
     }
+  }
+  private async invalidateCourseCache(courseId?: string) {
+    const keys = ['courses:list'];
+
+    if (courseId) {
+      keys.push(`course:${courseId}`);
+    }
+
+    await this.redisService.del(...keys);
   }
 }
