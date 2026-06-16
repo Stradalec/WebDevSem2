@@ -9,6 +9,7 @@ import { CourseModule } from './course/courseModule';
 import { LessonModule } from './lesson/lessonModule';
 import { RedisModule } from './redis/redisModule';
 import { KafkaModule } from './kafka/kafkaModule';
+import { ImageModule } from './image/imageModule';
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), 
     MongooseModule.forRootAsync({ 
@@ -22,7 +23,8 @@ import { KafkaModule } from './kafka/kafkaModule';
     CourseModule,
     LessonModule,
     RedisModule,
-    KafkaModule],
+    KafkaModule,
+    ImageModule],
     
   controllers: [AppController],
   providers: [AppService],
