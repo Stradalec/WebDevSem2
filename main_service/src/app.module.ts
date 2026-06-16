@@ -8,6 +8,7 @@ import { AuthorizationModule } from './authorization/authorizationModule';
 import { CourseModule } from './course/courseModule';
 import { LessonModule } from './lesson/lessonModule';
 import { RedisModule } from './redis/redisModule';
+import { KafkaModule } from './kafka/kafkaModule';
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), 
     MongooseModule.forRootAsync({ 
@@ -20,7 +21,8 @@ import { RedisModule } from './redis/redisModule';
     AuthorizationModule,
     CourseModule,
     LessonModule,
-    RedisModule],
+    RedisModule,
+    KafkaModule],
     
   controllers: [AppController],
   providers: [AppService],
