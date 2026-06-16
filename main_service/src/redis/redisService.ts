@@ -5,14 +5,14 @@ import Redis from 'ioredis';
 @Injectable()
 export class RedisService implements OnModuleDestroy {
   private readonly client: Redis;
-
+  private timeToLive 
   constructor(private readonly configService: ConfigService) {
     this.client = new Redis({
       host: this.configService.get<string>('REDIS_HOST') ?? 'localhost',
       port: this.configService.get<number>('REDIS_PORT') ?? 6379,
     });
+    this.timeToLive  = this.configService.get<number>('REDIS_TTL') ?? 60
   }
-  private readonly ttl = this.configService.get<number>('REDIS_TTL') ?? 60
   async get<T>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
 
@@ -23,7 +23,7 @@ export class RedisService implements OnModuleDestroy {
     return JSON.parse(value) as T;
   }
 
-  async set(key: string, value: unknown, ttlSeconds = 60): Promise<void> {
+  async set(key: string, value: unknown, ttlSeconds = this.timeToLive): Promise<void> {
     await this.client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
   }
 
