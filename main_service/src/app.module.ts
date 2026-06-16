@@ -7,6 +7,7 @@ import { UsersModule } from './user/userModule';
 import { AuthorizationModule } from './authorization/authorizationModule';
 import { CourseModule } from './course/courseModule';
 import { LessonModule } from './lesson/lessonModule';
+import { RedisModule } from './redis/redisModule';
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), 
     MongooseModule.forRootAsync({ 
@@ -18,7 +19,8 @@ import { LessonModule } from './lesson/lessonModule';
     UsersModule,
     AuthorizationModule,
     CourseModule,
-    LessonModule],
+    LessonModule,
+    RedisModule],
     
   controllers: [AppController],
   providers: [AppService],
