@@ -12,7 +12,7 @@ export class RedisService implements OnModuleDestroy {
       port: this.configService.get<number>('REDIS_PORT') ?? 6379,
     });
   }
-
+  private readonly ttl = this.configService.get<number>('REDIS_TTL') ?? 60
   async get<T>(key: string): Promise<T | null> {
     const value = await this.client.get(key);
 
