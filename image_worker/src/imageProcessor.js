@@ -1,11 +1,11 @@
-const path = require('path');
-const promises = require('fs/promises');
-const sharp = require('sharp');
+const path = require("path");
+const promises = require("fs/promises");
+const sharp = require("sharp");
 
 async function processImage(originalPath, filename) {
   const processedDir = path.resolve(
     process.cwd(),
-    process.env.PROCESSED_DIR || '../main_service/uploads/processed',
+    process.env.PROCESSED_DIR || "../main_service/uploads/processed",
   );
 
   await promises.mkdir(processedDir, { recursive: true });
@@ -20,7 +20,9 @@ async function processImage(originalPath, filename) {
   const maxWidth = 1200;
 
   const targetWidth = Math.min(originalWidth, maxWidth);
-  const targetHeight = Math.round((originalHeight * targetWidth) / originalWidth);
+  const targetHeight = Math.round(
+    (originalHeight * targetWidth) / originalWidth,
+  );
 
   const watermarkHeight = Math.min(
     120,
@@ -47,7 +49,7 @@ async function processImage(originalPath, filename) {
     .composite([
       {
         input: watermarkSvg,
-        gravity: 'south',
+        gravity: "south",
       },
     ])
     .jpeg({

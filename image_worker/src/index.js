@@ -1,18 +1,18 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const { connectDatabase } = require('./database');
-const { startKafkaWorker } = require('./kafka');
+const express = require("express");
+const { connectDatabase } = require("./database");
+const { startKafkaWorker } = require("./kafka");
 
 async function bootstrap() {
   await connectDatabase();
 
   const app = express();
 
-  app.get('/health', (_req, res) => {
+  app.get("/health", (_req, res) => {
     res.json({
-      status: 'ok',
-      service: 'image-worker',
+      status: "ok",
+      service: "image-worker",
     });
   });
 
@@ -26,6 +26,6 @@ async function bootstrap() {
 }
 
 bootstrap().catch((error) => {
-  console.error('[fatal]', error);
+  console.error("[fatal]", error);
   process.exit(1);
 });

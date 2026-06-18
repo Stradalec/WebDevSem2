@@ -8,14 +8,14 @@ import { ImageService } from "./imageService";
 import { ImageController } from "./ImageController";
 
 @Module({
-  imports: [MongooseModule.forFeature([
-    {name: Course.name, schema: CourseSchema},
-    {name: Lesson.name, schema: LessonSchema}
-  ]),
-    RedisModule,
-    KafkaModule], 
-  controllers: [ImageController],
-  providers: [ImageService],
+    imports: [MongooseModule.forFeature([
+        { name: Course.name, schema: CourseSchema },
+        { name: Lesson.name, schema: LessonSchema }
+    ]),
+        RedisModule,
+        KafkaModule],
+    controllers: [ImageController],
+    providers: [ImageService],
 
 })
 export class ImageModule { }

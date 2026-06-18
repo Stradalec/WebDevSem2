@@ -11,13 +11,14 @@ import { RedisModule } from './redis/redisModule';
 import { KafkaModule } from './kafka/kafkaModule';
 import { ImageModule } from './image/imageModule';
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), 
-    MongooseModule.forRootAsync({ 
-      imports: [ConfigModule], 
-      inject: [ConfigService], 
-      useFactory: (configService: ConfigService) => ({ 
-        uri: configService.get<string>('MONGO_URL') }),
-      }),
+  imports: [ConfigModule.forRoot({ isGlobal: true }),
+  MongooseModule.forRootAsync({
+    imports: [ConfigModule],
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService) => ({
+      uri: configService.get<string>('MONGO_URL')
+    }),
+  }),
     UsersModule,
     AuthorizationModule,
     CourseModule,
@@ -25,7 +26,7 @@ import { ImageModule } from './image/imageModule';
     RedisModule,
     KafkaModule,
     ImageModule],
-    
+
   controllers: [AppController],
   providers: [AppService],
 

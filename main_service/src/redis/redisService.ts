@@ -4,38 +4,38 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService implements OnModuleDestroy {
-  private readonly client: Redis;
-  private timeToLive 
-  constructor(private readonly configService: ConfigService) {
-    this.client = new Redis({
-      host: this.configService.get<string>('REDIS_HOST') ?? 'localhost',
-      port: this.configService.get<number>('REDIS_PORT') ?? 6379,
-    });
-    this.timeToLive  = this.configService.get<number>('REDIS_TTL') ?? 60
-  }
-  async get<T>(key: string): Promise<T | null> {
-    const value = await this.client.get(key);
+    private readonly client: Redis;
+    private timeToLive
+    constructor(private readonly configService: ConfigService) {
+        this.client = new Redis({
+            host: this.configService.get<string>('REDIS_HOST') ?? 'localhost',
+            port: this.configService.get<number>('REDIS_PORT') ?? 6379,
+        });
+        this.timeToLive = this.configService.get<number>('REDIS_TTL') ?? 60
+    }
+    async get<T>(key: string): Promise<T | null> {
+        const value = await this.client.get(key);
 
-    if (!value) {
-      return null;
+        if (!value) {
+            return null;
+        }
+
+        return JSON.parse(value) as T;
     }
 
-    return JSON.parse(value) as T;
-  }
-
-  async set(key: string, value: unknown, ttlSeconds = this.timeToLive): Promise<void> {
-    await this.client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
-  }
-
-  async del(...keys: string[]): Promise<void> {
-    if (keys.length === 0) {
-      return;
+    async set(key: string, value: unknown, ttlSeconds = this.timeToLive): Promise<void> {
+        await this.client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
     }
 
-    await this.client.del(...keys);
-  }
+    async del(...keys: string[]): Promise<void> {
+        if (keys.length === 0) {
+            return;
+        }
 
-  async onModuleDestroy() {
-    await this.client.quit();
-  }
+        await this.client.del(...keys);
+    }
+
+    async onModuleDestroy() {
+        await this.client.quit();
+    }
 }

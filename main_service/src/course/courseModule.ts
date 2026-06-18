@@ -10,11 +10,11 @@ import { RedisModule } from '../redis/redisModule';
   imports: [
     MongooseModule.forFeature([
       { name: Course.name, schema: CourseSchema },
-      { name: User.name, schema: UserSchema}
+      { name: User.name, schema: UserSchema }
     ]),
-  RedisModule],
+    RedisModule],
   controllers: [CourseController],
   providers: [CourseService],
   exports: [MongooseModule, CourseModule],
 })
-export class CourseModule {}
+export class CourseModule { }

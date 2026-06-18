@@ -12,7 +12,7 @@ export class AuthorizationService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(dto: RegisterDto) {
     const existingUser = await this.userModel.findOne({ email: dto.email });

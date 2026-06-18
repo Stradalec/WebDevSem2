@@ -9,7 +9,7 @@ export class Lesson {
   @Prop({ required: true })
   name!: string;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   textContent!: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Course', required: true })

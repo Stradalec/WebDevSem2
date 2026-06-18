@@ -11,9 +11,9 @@ import { RedisModule } from '../redis/redisModule';
       { name: Lesson.name, schema: LessonSchema },
       { name: Course.name, schema: CourseSchema }
     ]),
-  RedisModule],
+    RedisModule],
   controllers: [LessonController],
   providers: [LessonService],
   exports: [MongooseModule, LessonService],
 })
-export class LessonModule {}
+export class LessonModule { }

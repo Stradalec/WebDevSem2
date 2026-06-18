@@ -5,7 +5,7 @@ import { AuthorizationService } from './authorizationService';
 import { JwtAuthGuard } from './jwt.authGuard';
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthorizationService) {}
+  constructor(private readonly authService: AuthorizationService) { }
   @Post('register')
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);

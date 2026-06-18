@@ -5,21 +5,21 @@ import { UserRole } from '../../user/schemas/user.schema';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+    constructor(private readonly reflector: Reflector) { }
 
-  canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
-      ROLES_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+    canActivate(context: ExecutionContext): boolean {
+        const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
+            ROLES_KEY,
+            [context.getHandler(), context.getClass()],
+        );
 
-    if (!requiredRoles || requiredRoles.length === 0) {
-      return true;
+        if (!requiredRoles || requiredRoles.length === 0) {
+            return true;
+        }
+
+        const request = context.switchToHttp().getRequest();
+        const user = request.user;
+
+        return Boolean(user && requiredRoles.includes(user.role));
     }
-
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
-
-    return Boolean(user && requiredRoles.includes(user.role));
-  }
 }

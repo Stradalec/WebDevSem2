@@ -9,7 +9,7 @@ export class Course {
   @Prop({ required: true })
   name!: string;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   description!: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
@@ -19,13 +19,13 @@ export class Course {
   cover?: ImageInfo;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Lesson' }], default: [] })
-    lessons!: Types.ObjectId[];
+  lessons!: Types.ObjectId[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
-    students!: Types.ObjectId[];
-  
+  students!: Types.ObjectId[];
+
   @Prop({ default: 0 })
-    studentsCount!: number;
+  studentsCount!: number;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

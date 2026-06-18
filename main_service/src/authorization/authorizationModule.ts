@@ -8,9 +8,9 @@ import { JwtStrategy } from './jwt.strategy';
 @Module({
   imports: [UsersModule,
     JwtModule.registerAsync({
-        imports: [ConfigModule], 
-        inject: [ConfigService],
-    useFactory: (configService: ConfigService) => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
           expiresIn: '1h',
@@ -19,7 +19,7 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthorizationService, JwtStrategy], 
+  providers: [AuthorizationService, JwtStrategy],
 
 })
 export class AuthorizationModule { }

@@ -10,7 +10,7 @@ import { Multer } from "multer";
 import { ImageStatus } from "../common_schemas/image.schema";
 import { UserRole } from "../user/schemas/user.schema";
 @Injectable()
-export class ImageService{
+export class ImageService {
     constructor(
         @InjectModel(Course.name)
         private readonly courseModel: Model<CourseDocument>,
@@ -18,25 +18,25 @@ export class ImageService{
         private readonly lessonModel: Model<LessonDocument>,
         private readonly kafkaService: KafkaService,
         private readonly redisService: RedisService
-    ){}
+    ) { }
 
-    async uploadCourseCover(courseId: string, file: Express.Multer.File, user: AuthUser){
+    async uploadCourseCover(courseId: string, file: Express.Multer.File, user: AuthUser) {
         if (!file) {
             throw new NotFoundException("File not found");
         }
         const course = await this.courseModel.findById(courseId);
         if (!course) {
-           throw new NotFoundException('Course not found');
+            throw new NotFoundException('Course not found');
         }
 
         this.ensureTeacherOwner(course.teacher.toString(), user)
-        course.cover = { url: file.filename, status: ImageStatus.PROCESSING}
+        course.cover = { url: file.filename, status: ImageStatus.PROCESSING }
         await course.save()
         await this.redisService.del('courses:list', `course:${courseId}`);
-        await this.kafkaService.sendImageUploaded({entityType: "course", entityId: courseId, originalPath: file.path, filename: file.filename});
-        return{ uploaded: true, entityType: "course", entityId: courseId, filename: file.filename, status: ImageStatus.PROCESSING}
+        await this.kafkaService.sendImageUploaded({ entityType: "course", entityId: courseId, originalPath: file.path, filename: file.filename });
+        return { uploaded: true, entityType: "course", entityId: courseId, filename: file.filename, status: ImageStatus.PROCESSING }
     }
-    
+
     async uploadLessonImage(lessonId: string, file: Express.Multer.File, user: AuthUser) {
         if (!file) {
             throw new NotFoundException('File not found');
@@ -46,7 +46,7 @@ export class ImageService{
 
         if (!lesson) {
             throw new NotFoundException('Lesson not found');
-        }   
+        }
 
         const course = await this.courseModel.findById(lesson.course);
 
@@ -56,16 +56,16 @@ export class ImageService{
 
         this.ensureTeacherOwner(course.teacher.toString(), user);
 
-        lesson.images.push({url: file.filename,status: ImageStatus.PROCESSING});
+        lesson.images.push({ url: file.filename, status: ImageStatus.PROCESSING });
 
         await lesson.save();
 
         await this.redisService.del('courses:list', `course:${course._id.toString()}`);
 
-        await this.kafkaService.sendImageUploaded({entityType: 'lesson', entityId: lessonId, originalPath: file.path, filename: file.filename,});
+        await this.kafkaService.sendImageUploaded({ entityType: 'lesson', entityId: lessonId, originalPath: file.path, filename: file.filename, });
 
-    return {uploaded: true, entityType: 'lesson', entityId: lessonId, filename: file.filename,status: ImageStatus.PROCESSING};
-  }
+        return { uploaded: true, entityType: 'lesson', entityId: lessonId, filename: file.filename, status: ImageStatus.PROCESSING };
+    }
 
     private ensureTeacherOwner(ownerId: string, user: AuthUser) {
         if (user.role !== UserRole.TEACHER) {
@@ -76,5 +76,5 @@ export class ImageService{
             throw new ForbiddenException('Only owner can upload images');
         }
     }
-    
+
 }

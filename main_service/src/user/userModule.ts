@@ -10,4 +10,4 @@ import { User, UserSchema } from './schemas/user.schema';
   ],
   exports: [MongooseModule],
 })
-export class UsersModule {}
+export class UsersModule { }
