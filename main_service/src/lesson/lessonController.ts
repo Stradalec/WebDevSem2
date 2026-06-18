@@ -38,7 +38,13 @@ export class LessonController {
     ) {
         return this.lessonService.update(courseId, lessonId, dto, req.user);
     }
-
+    @Get('courses/:courseId/lessons/:lessonId')
+    findOne(
+        @Param('courseId') courseId: string,
+        @Param('lessonId') lessonId: string,
+    ) {
+        return this.lessonService.findOne(courseId, lessonId);
+    }
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.TEACHER)
     @Delete('courses/:courseId/lessons/:lessonId')

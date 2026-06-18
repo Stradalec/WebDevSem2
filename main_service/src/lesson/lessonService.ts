@@ -31,7 +31,24 @@ export class LessonService {
             .find({ course: course._id })
             .sort({ order: 1 });
     }
+    async findOne(courseId: string, lessonId: string) {
+        const course = await this.courseModel.findById(courseId);
 
+        if (!course) {
+            throw new NotFoundException('Course not found');
+        }
+
+        const lesson = await this.lessonModel.findOne({
+            _id: lessonId,
+            course: course._id,
+        });
+
+        if (!lesson) {
+            throw new NotFoundException('Lesson not found');
+        }
+
+        return lesson;
+    }
     async create(courseId: string, dto: CreateLessonDto, user: AuthUser) {
         const course = await this.courseModel.findById(courseId);
 
