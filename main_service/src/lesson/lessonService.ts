@@ -50,18 +50,17 @@ export class LessonService {
         return lesson;
     }
     async create(courseId: string, dto: CreateLessonDto, user: AuthUser) {
-        const course = await this.courseModel.findById(courseId);
-
+        const course = await this.courseModel.findById(courseId);      
         if (!course) {
             throw new NotFoundException('Course not found');
         }
-
+        const lessonsCount = await this.lessonModel.countDocuments({ course: course._id });
         this.ensureTeacherOwner(course, user);
 
         const lesson = await this.lessonModel.create({
             name: dto.name,
             textContent: dto.textContent,
-            order: dto.order,
+            order: lessonsCount + 1,
             course: course._id,
             images: [],
         });

@@ -8,8 +8,4 @@ export class CreateLessonDto {
     @IsString()
     @MinLength(5)
     textContent!: string;
-
-    @IsInt()
-    @Min(1)
-    order!: number;
 }
