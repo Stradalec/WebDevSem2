@@ -2,7 +2,7 @@ import { Controller, Get, NotFoundException, Param, Post, Req, Res, UploadedFile
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-import { existsSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import { ImageService } from './imageService';
 import { JwtAuthGuard } from '../authorization/jwt.authGuard';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -12,7 +12,8 @@ import express from 'express';
 
 const originalsPath = join(process.cwd(), 'uploads', 'originals');
 const processedPath = join(process.cwd(), 'uploads', 'processed');
-
+mkdirSync(originalsPath, { recursive: true });
+mkdirSync(processedPath, { recursive: true });
 const imageStorage = diskStorage({
     destination: originalsPath,
     filename: (_req, file, callback) => {

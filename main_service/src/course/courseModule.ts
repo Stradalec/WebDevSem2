@@ -15,6 +15,6 @@ import { RedisModule } from '../redis/redisModule';
     RedisModule],
   controllers: [CourseController],
   providers: [CourseService],
-  exports: [MongooseModule, CourseModule],
+  exports: [MongooseModule, CourseService],
 })
 export class CourseModule { }
