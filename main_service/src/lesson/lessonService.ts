@@ -6,7 +6,7 @@ import { Course, CourseDocument } from '../course/schemas/course.schema';
 import { UserRole } from '../user/schemas/user.schema';
 import { CreateLessonDto } from './dto/createLesson.dto';
 import { UpdateLessonDto } from './dto/updateLesson.dto';
-import { AuthUser } from '../course/authUser';
+import { AuthUser } from '../common/authUser';
 import { RedisService } from '../redis/redisService';
 
 @Injectable()

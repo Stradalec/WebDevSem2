@@ -5,7 +5,7 @@ import { Course, CourseDocument } from './schemas/course.schema';
 import { User, UserDocument, UserRole } from '../user/schemas/user.schema';
 import { CreateCourseDto } from './dto/createCourse.dto';
 import { UpdateCourseDto } from './dto/updateCourse.dto';
-import { AuthUser } from './authUser';
+import { AuthUser } from '../common/authUser';
 import { RedisService } from '../redis/redisService';
 
 

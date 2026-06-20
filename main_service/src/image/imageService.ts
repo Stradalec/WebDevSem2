@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Course, CourseDocument } from "../course/schemas/course.schema";
 import { Lesson, LessonDocument } from "../lesson/schemas/lesson.schema";
-import { AuthUser } from "../course/authUser";
+import { AuthUser } from "../common/authUser";
 import { KafkaService } from "../kafka/kafkaService";
 import { RedisService } from "../redis/redisService";
 import { Multer } from "multer";
